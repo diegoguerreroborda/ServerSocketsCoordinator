@@ -1,0 +1,66 @@
+.divTable{
+    width: 40%;
+    padding: 30px;
+    background: #24303c;
+    background-color: #252c32;
+    margin: auto;
+    font-size: 13px;
+    padding: 30px;
+    border-radius: 4px;
+    box-shadow: 7px 13px 37px #000;
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+
+th{
+    color: white;
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+  
+td{
+    width: 100%;
+    background: #24303c;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+    font-family: 'calibri';
+    font-size: 18px;
+    color: white;
+}
+
+.btn1 {
+    /* Color del texo */
+    margin-top: 16px;
+    color: #0099CC;
+    /* Eliminar color de fondo */
+    background: transparent;
+    /* Grosor del borde, estilo de línea y color */
+    border: 2px solid #0099CC;
+    /* Añadir esquinas curvadas */
+    border-radius: 6px;
+    /* Poner texto en mayúsculas */
+    border: none;
+          color: transparent;
+          padding: 8px 16px;
+          text-align: center;
+          display: inline-block;
+          font-size: 10px;
+          margin: 10px 1px;
+          -webkit-transition-duration: 0.4s;
+          transition-duration: 0.4s;
+          cursor: pointer;
+          text-decoration: none;
+          text-transform: uppercase;
+}
+  
+.btn1 {
+    background-color: transparent; 
+    color: white;
+    border: 2px solid #008CBA;
+}
+  
+.btn1:hover {
+    background-color: white;
+    color: #363b40;
+}

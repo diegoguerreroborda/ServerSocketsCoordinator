@@ -19,6 +19,9 @@
   "homepage": "https://github.com/diegoguerreroborda/ServerSocketsCoordinator#readme",
   "dependencies": {
     "axios": "^0.21.1",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "http": "0.0.1-security",
+    "shelljs": "^0.8.4",
+    "socket.io": "^4.0.1"
   }
 }

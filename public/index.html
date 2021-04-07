@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+  <link href="style.css" rel="stylesheet">
+  <title>Dashboard Coordinator</title>
+</head>
+<body>
+    <h1 id="app" name="hour">{{ message }}</h1>
+
+  <div class="divTable" id="app-2">
+    <table>
+      <thead>
+          <tr>
+              <th>Host</th><th>Disponibilidad</th>
+          </tr>
+      </thead>
+      <tr class="list-group-item" v-for="server in servers">
+        <td>{{ server.name }}</td><td>{{ server.alive }}</td>
+      </tr>
+    </table>
+    <button class="btn1" id="btnCheck" type="button" id="sendData" onclick="newInstance()">Nueva instancia</button>
+</div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

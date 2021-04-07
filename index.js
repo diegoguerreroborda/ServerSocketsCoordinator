@@ -1,17 +1,25 @@
 const express = require('express')
 const axios = require('axios');
 const bodyParser = require('body-parser');
-
+const socketio = require('socket.io')
+const http = require('http')
+const shell = require('shelljs');
 const app = express()
 app.use(bodyParser.json())
-const PORT = process.argv[2] || 3000
+const server = http.createServer(app)
+const io = socketio(server)
+const PORT = process.argv[2] || 3010
+
+app.use(express.static('public'))
 
 let hour = `${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`
 //let hour = '23:21:04'
-let servers = [{name: "http://localhost:3000/", alive: true}, {name: "http://localhost:3001/", alive: true}]
+//let servers = [{name: "http://localhost:4000/", alive: true}, {name: "http://localhost:4001/", alive: true}]
+let servers = [];
 
 let differences = [];
 let result = 0;
+let portInstance = 4002;
 
 function convertToDate(currentD){
     console.log('La hora convert', hour)
@@ -63,18 +71,6 @@ async function callServers(afterUrl, localHour){
         });
     }
 }
-/*
-app.get('/hour', async(req, res) => {
-    differences = [];
-    console.log('La hora local es...', hour)
-    await callServers('', hour);
-    await berkeleyAlgorithm();
-    await hourNew();
-    await callServers('fixed', `${hour.getHours()}:${hour.getMinutes()}:${hour.getSeconds()}`);
-    hour = `${hour.getHours()}:${hour.getMinutes()}:${hour.getSeconds()}`;
-    res.sendStatus(200)
-})
-*/
 
 app.get('/list_servers', async(req, res) => {
     console.log(servers)
@@ -92,6 +88,21 @@ setInterval(async function(){
     hour = `${hour.getHours()}:${hour.getMinutes()}:${hour.getSeconds()}`;
 }, 60000);
 
-app.listen(PORT, () => {
+io.on('connection', function (socket) {
+    console.log(`client: ${socket.id}`)
+    //enviando al cliente
+    setInterval(async () => {
+        await callServers('', hour)
+        socket.emit('server/list_servers', servers)
+    }, 5000)
+})
+
+app.get('/create_instance', (req, res) => {
+    shell.exec(`sh createInstance.sh ${portInstance}`)
+    servers.push({name:`http://localhost:${portInstance}/`, alive : true})
+    portInstance++;
+})
+
+server.listen(PORT, () => {
     console.log(`Server running in port:${PORT}`)
 })
