@@ -63,7 +63,7 @@ async function callServers(afterUrl, localHour){
         });
     }
 }
-
+/*
 app.get('/hour', async(req, res) => {
     differences = [];
     console.log('La hora local es...', hour)
@@ -74,8 +74,23 @@ app.get('/hour', async(req, res) => {
     hour = `${hour.getHours()}:${hour.getMinutes()}:${hour.getSeconds()}`;
     res.sendStatus(200)
 })
+*/
 
+app.get('/list_servers', async(req, res) => {
+    console.log(servers)
+    await callServers('', hour)
+    res.send(servers)
+})
 
+setInterval(async function(){ 
+    differences = [];
+    console.log('La hora local es...', hour)
+    await callServers('', hour);
+    await berkeleyAlgorithm();
+    await hourNew();
+    await callServers('fixed', `${hour.getHours()}:${hour.getMinutes()}:${hour.getSeconds()}`);
+    hour = `${hour.getHours()}:${hour.getMinutes()}:${hour.getSeconds()}`;
+}, 60000);
 
 app.listen(PORT, () => {
     console.log(`Server running in port:${PORT}`)
