@@ -14,6 +14,7 @@ let differences = [];
 let result = 0;
 
 function convertToDate(currentD){
+    console.log('La hora convert', hour)
     var pieces = currentD.split(':')
     let currenTime = new Date()
     if(pieces.length === 3) {
@@ -33,67 +34,48 @@ function berkeleyAlgorithm(){
         sum = sum + (differences[i] * 60000)
     }
     result = (sum/differences.length)
-    console.log(sum)
-    console.log(result)
 }
 
 function hourNew(){
     hour = convertToDate(hour)
     hour.setTime(hour.getTime() + (result))
-    console.log('Nueva hora', hour)
     console.log(hour.getHours())
     console.log(hour.getMinutes())
 }
 
-//Enviar hora fija a todos los servers conectados.
-app.all('/hour', async(req, res, next) => {
-    //axios post a todos
-    console.log("*****************")
-    for (const host in servers) {
-        console.log(servers[host].name)
-        await axios({
-            method: 'post',
-            url : servers[host].name,
-            data: {
-              time: hour
-            }
-        }).then(response => {
-            console.log('Responde melon:', response.data);
-            differences.push(response.data)
-            servers[host].alive = true;
-            //contador para ver cuantos están prendidos
-        }).catch(err => {
-            console.log("Está apagado ñro")
-            servers[host].alive = false;
-            //Ver si sin poner numero aquí sirve.
-        });
-    }
-    berkeleyAlgorithm();
-    hourNew();
-    //res.send('no sé que poner aquí :v');
-    next()
-})
-
-app.get('/hour', async(req, res) => {
-    //Va a enviar la hora ya ajustada.
+async function callServers(afterUrl, localHour){
     console.log("-----------------------")
     for (const host in servers) {
         console.log(servers[host].name)
         await axios({
             method: 'post',
-            url : `${servers[host].name}fixed`,
+            url : `${servers[host].name}${afterUrl}`,
             data: {
-              time: `${hour.getHours()}:${hour.getMinutes()}:${hour.getSeconds()}`
+              time: localHour
             }
         }).then(response => {
-            console.log('Desface:', response.data);
-            //Se va a una lista de ajustes.
+            console.log('Resultado:', response.data);
+            differences.push(response.data)
+            servers[host].alive = true;
         }).catch(err => {
             console.log("Apagadooo")
+            servers[host].alive = false;
         });
     }
-    res.send('no sé que poner aquí :v');
+}
+
+app.get('/hour', async(req, res) => {
+    differences = [];
+    console.log('La hora local es...', hour)
+    await callServers('', hour);
+    await berkeleyAlgorithm();
+    await hourNew();
+    await callServers('fixed', `${hour.getHours()}:${hour.getMinutes()}:${hour.getSeconds()}`);
+    hour = `${hour.getHours()}:${hour.getMinutes()}:${hour.getSeconds()}`;
+    res.sendStatus(200)
 })
+
+
 
 app.listen(PORT, () => {
     console.log(`Server running in port:${PORT}`)
