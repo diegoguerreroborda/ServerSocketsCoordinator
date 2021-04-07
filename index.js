@@ -19,7 +19,25 @@ let servers = [];
 
 let differences = [];
 let result = 0;
-let portInstance = 4002;
+let portInstance = 4000;
+
+function getHourString(hourC){
+    return `${hourC.getHours()}:${hourC.getMinutes()}:${hourC.getSeconds()}`;
+}
+
+function getHourExternal() {
+    axios.get(`http://worldtimeapi.org/api/timezone/America/Bogota`)
+		.then((response) => {
+			date = new Date(response.data.utc_datetime);
+			//var dateAux = new Date();
+			console.log(date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds());
+            hour = getHourString(date)
+			//console.log(dateAux.getHours() + ':' + dateAux.getMinutes() + ':' + dateAux.getSeconds());
+		})
+		.catch((error) => {
+			console.log('error en post usuario');
+	});
+}
 
 function convertToDate(currentD){
     console.log('La hora convert', hour)
@@ -80,6 +98,7 @@ app.get('/list_servers', async(req, res) => {
 
 setInterval(async function(){ 
     differences = [];
+    await getHourExternal();
     console.log('La hora local es...', hour)
     await callServers('', hour);
     await berkeleyAlgorithm();
@@ -102,6 +121,11 @@ app.get('/create_instance', (req, res) => {
     servers.push({name:`http://localhost:${portInstance}/`, alive : true})
     portInstance++;
 })
+/*
+app.get('/time', (req, res) => {
+	
+});
+*/
 
 server.listen(PORT, () => {
     console.log(`Server running in port:${PORT}`)
