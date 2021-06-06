@@ -10,6 +10,7 @@
     box-shadow: 7px 13px 37px #000;
     margin-top: 30px;
     margin-bottom: 30px;
+    overflow: auto;
   }
 
 th{

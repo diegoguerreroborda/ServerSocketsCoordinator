@@ -120,12 +120,8 @@ app.get('/create_instance', (req, res) => {
     shell.exec(`sh createInstance.sh ${portInstance}`)
     servers.push({name:`http://localhost:${portInstance}/`, alive : true})
     portInstance++;
+    res.sendStatus(200)
 })
-/*
-app.get('/time', (req, res) => {
-	
-});
-*/
 
 server.listen(PORT, () => {
     console.log(`Server running in port:${PORT}`)
